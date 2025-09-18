@@ -47,12 +47,16 @@ for i, row in enumerate(documents):
 # Use cosine_similarity([X], [Y]) to calculate the similarities between 2 vectors
 # --> Add your Python code here
 highest_similarity = 0
+doc1 = 0
+doc2 = 0
 for i, row in enumerate(docTermMatrix):
     for j, row2 in enumerate(docTermMatrix):
       if i != j:
         cosine_similarities = cosine_similarity([row],[row2])
         if cosine_similarities > highest_similarity:
           highest_similarity = cosine_similarities
+          doc1 = i
+          doc2 = j
 
 print(highest_similarity)
 
