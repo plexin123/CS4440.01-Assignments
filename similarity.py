@@ -36,8 +36,8 @@ for i, row in enumerate(documents):
     # splitting the words in each document can be used as an index
     # for example the row [apple,car,idea] is compared to the unique words [apple, car,math,yellow, idea]
     # if the word appears on the set of values then append on the row i the value 1 other than that 0;
-    for word in words:
-        if word in unique_words:
+    for word in unique_words:
+        if word in words:
           docTermMatrix[i].append(1)
         else:
           docTermMatrix[i].append(0)
