@@ -1,9 +1,9 @@
 # -------------------------------------------------------------------------
 # AUTHOR: Paul Puma
-# FILENAME: title of the source file
-# SPECIFICATION: description of the program
+# FILENAME: document_similarity.py
+# SPECIFICATION: Build document-term matrix with binary encoding and find most similar documents
 # FOR: CS 4440 (Data Mining) - Assignment #1
-# TIME SPENT: how long it took you to complete the assignment
+# TIME SPENT: [Fill in your time]
 # -----------------------------------------------------------*/
 
 #IMPORTANT NOTE: DO NOT USE ANY ADVANCED PYTHON LIBRARY TO COMPLETE THIS CODE SUCH AS numpy or pandas.
@@ -20,27 +20,33 @@ with open('cleaned_documents.csv', 'r') as csvfile:
   reader = csv.reader(csvfile)
   for i, row in enumerate(reader):
       if i > 0: #skipping the header
-         documents.append (row)
+         documents.append(row)
 
-#Building the document-term matrix by using binary encoding.
-#You must identify each distinct word in the collection using the white space as your character delimiter.
-#--> add your Python code here
 docTermMatrix = []
 unique_words = set()
-for i, row in enumerate(documents):
-    words = row.split() 
+
+for row in documents:
+    text = row[1] if row else ""
+    words = text.split() 
     unique_words.update(words)
-    # docTermMatrix.appends(words)
-for i, row in enumerate(documents):
-    words = row.split()
+
+
+unique_words = sorted(list(unique_words))
+
+for row in documents:
+    text = row[1] if row else ""
+    words = text.split()
+    temp = []
     # splitting the words in each document can be used as an index
     # for example the row [apple,car,idea] is compared to the unique words [apple, car,math,yellow, idea]
     # if the word appears on the set of values then append on the row i the value 1 other than that 0;
     for word in unique_words:
         if word in words:
-          docTermMatrix[i].append(1)
+          temp.append(1)
         else:
-          docTermMatrix[i].append(0)
+          temp.append(0)
+          
+    docTermMatrix.append(temp)
 
 
 # Compare the pairwise cosine similarities and store the highest one
@@ -49,17 +55,20 @@ for i, row in enumerate(documents):
 highest_similarity = 0
 doc1 = 0
 doc2 = 0
+
 for i, row in enumerate(docTermMatrix):
     for j, row2 in enumerate(docTermMatrix):
-      if i != j:
-        cosine_similarities = cosine_similarity([row],[row2])
-        if cosine_similarities > highest_similarity:
-          highest_similarity = cosine_similarities
+      # Fix: Only check j > i to avoid duplicates and comparing document with itself
+      if j > i:
+        cosine_similarities = cosine_similarity([row], [row2])
+        # Fix: cosine_similarity returns a 2D array, need to extract the value
+        similarity_value = cosine_similarities[0][0]
+        if similarity_value > highest_similarity:
+          highest_similarity = similarity_value
           doc1 = i
           doc2 = j
-
-print(highest_similarity)
 
 # Print the highest cosine similarity following the information below
 # The most similar documents are document 10 and document 100 with cosine similarity = x
 # --> Add your Python code here
+print(f"The most similar documents are document {doc1} and document {doc2} with cosine similarity = {highest_similarity}")
